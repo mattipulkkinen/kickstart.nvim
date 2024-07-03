@@ -105,8 +105,20 @@ vim.opt.number = true
 -- vim.opt.relativenumber = true
 vim.opt.relativenumber = true
 
--- Set colorcolumn
-vim.opt.colorcolumn = '100'
+-- Set colorcolumn based on filetype, or default to nothing
+vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+  desc = 'Set colorcolumn based on file type',
+  group = vim.api.nvim_create_augroup('ColorcolumnByFiletype', { clear = true }),
+  callback = function(_)
+    if vim.bo.filetype == 'rust' or vim.bo.filetype == 'lua' then
+      vim.opt.colorcolumn = '100'
+    elseif vim.bo.filetype == 'c' or vim.bo.filetype == 'python' or vim.bo.filetype == 'sh' then
+      vim.opt.colorcolumn = '80'
+    else
+      vim.opt.colorcolumn = ''
+    end
+  end,
+})
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
